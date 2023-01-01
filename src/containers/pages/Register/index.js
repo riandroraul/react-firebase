@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import "./register.scss";
+import auth from "../../../config/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+// import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 
 class Register extends Component {
   state = {
@@ -18,9 +20,10 @@ class Register extends Component {
     const { email, password } = this.state;
     console.log(email);
     console.log(password);
-    // const auth = getAuth();
+    // const auth = app.getAuth();
     // console.log(auth);
-    createUserWithEmailAndPassword(email, password)
+
+    createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
