@@ -14,7 +14,7 @@ class Login extends Component {
 }
 
 const reduxState = (state) => ({
-  popupProps: state.popup
-})
+  popupProps: state.popup,
+});
 
 export default connect(reduxState, null)(Login);
