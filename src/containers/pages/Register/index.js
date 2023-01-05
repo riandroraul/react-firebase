@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import "./register.scss";
-import auth from "../../../config/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import Button from "../../../components/atoms/Button";
+import { connect } from "react-redux";
+import { registerUserApi } from "../../../config/redux/action";
 // import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 
 class Register extends Component {
@@ -18,23 +19,19 @@ class Register extends Component {
 
   handleSubmit = () => {
     const { email, password } = this.state;
-    console.log(email);
-    console.log(password);
-    // const auth = app.getAuth();
-    // console.log(auth);
-
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        console.log(user);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode);
-        console.log(errorMessage);
-      });
+    this.props.registerAPI({ email, password });
+    // createUserWithEmailAndPassword(auth, email, password)
+    //   .then((userCredential) => {
+    //     // Signed in
+    //     const user = userCredential.user;
+    //     console.log(user);
+    //   })
+    //   .catch((error) => {
+    //     const errorCode = error.code;
+    //     const errorMessage = error.message;
+    //     console.log(errorCode);
+    //     console.log(errorMessage);
+    //   });
   };
 
   render() {
@@ -58,9 +55,11 @@ class Register extends Component {
             id="password"
             onChange={this.handleChangeText}
           />
-          <button onClick={this.handleSubmit} className="btn">
-            Register
-          </button>
+          <Button
+            onClick={this.handleSubmit}
+            title={"Register"}
+            loading={this.props.isLoading}
+          />
         </div>
         {/* <button>Go to dashboard</button> */}
       </div>
@@ -68,4 +67,11 @@ class Register extends Component {
   }
 }
 
-export default Register;
+const reduxState = (state) => ({ isLoading: state.isLoading });
+const reduxDispatch = (dispatch) => ({
+  registerAPI: (data) => {
+    registerUserApi(data)(dispatch);
+  },
+});
+
+export default connect(reduxState, reduxDispatch)(Register);
