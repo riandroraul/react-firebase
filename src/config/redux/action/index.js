@@ -1,4 +1,7 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import auth from "../../firebase";
 
 // fungsi asynchronous callback
@@ -24,4 +27,36 @@ export const registerUserApi = (data) => (callback) => {
       console.log(errorMessage);
       callback({ type: "CHANGE_LOADING", value: false });
     });
+};
+
+export const loginUserAPI = (data) => (callback) => {
+  return new Promise((resolve, reject) => {
+    callback({ type: "CHANGE_LOADING", value: true });
+    signInWithEmailAndPassword(auth, data.email, data.password)
+      .then((userCredential) => {
+        // log in
+        // const user = userCredential.user;
+        const dataUser = {
+          email: userCredential.user.email,
+          uid: userCredential.user.uid,
+          emailVerified: userCredential.user.emailVerified,
+        };
+        console.log(userCredential);
+        callback({ type: "CHANGE_LOADING", value: false });
+        callback({ type: "CHANGE_ISLOGIN", value: true });
+        callback({
+          type: "CHANGE_USER",
+          value: dataUser,
+        });
+        resolve(true);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode);
+        console.log(errorMessage);
+        callback({ type: "CHANGE_LOADING", value: false });
+        reject(false);
+      });
+  });
 };

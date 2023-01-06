@@ -20,6 +20,10 @@ class Register extends Component {
   handleSubmit = () => {
     const { email, password } = this.state;
     this.props.registerAPI({ email, password });
+    this.setState({
+      email: "",
+      password: "",
+    });
   };
 
   render() {
@@ -32,6 +36,7 @@ class Register extends Component {
             type="email"
             placeholder="email"
             name="email"
+            value={this.state.email}
             id="email"
             onChange={this.handleChangeText}
           />
@@ -40,6 +45,7 @@ class Register extends Component {
             type="password"
             placeholder="password"
             name="password"
+            value={this.state.password}
             id="password"
             onChange={this.handleChangeText}
           />
