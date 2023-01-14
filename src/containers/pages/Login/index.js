@@ -97,7 +97,7 @@ const Login = (props) => {
   const handleLogin = async () => {
     // try {
     // const { email, password } = this.state;
-    const res = await props.loginAPI({ email, password });
+    const res = await props.loginAPI({ email, password }).catch((err) => err);
     if (res) {
       // this.setState({
       //   email: "",
@@ -105,7 +105,7 @@ const Login = (props) => {
       // });
       setEmail("");
       setPassword("");
-      console.log("Login Berhasil");
+      console.log("Login Berhasil", res);
       // console.log(useNavigate()("/"));
       // <Navigasi path="/" />;
       navigate("/");

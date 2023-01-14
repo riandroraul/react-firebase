@@ -3,6 +3,8 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import auth from "../../firebase";
+import { ref, set, push } from "firebase/database";
+import { database } from "../../firebase";
 
 // fungsi asynchronous callback
 export const actionUsername = (callback) => {
@@ -40,6 +42,7 @@ export const loginUserAPI = (data) => (callback) => {
           email: userCredential.user.email,
           uid: userCredential.user.uid,
           emailVerified: userCredential.user.emailVerified,
+          refreshToken: userCredential.user.refreshToken,
         };
         console.log(userCredential);
         callback({ type: "CHANGE_LOADING", value: false });
@@ -48,7 +51,7 @@ export const loginUserAPI = (data) => (callback) => {
           type: "CHANGE_USER",
           value: dataUser,
         });
-        resolve(true);
+        resolve(dataUser);
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -58,5 +61,13 @@ export const loginUserAPI = (data) => (callback) => {
         callback({ type: "CHANGE_LOADING", value: false });
         reject(false);
       });
+  });
+};
+
+export const addDataToAPi = (data) => (dispatch) => {
+  push(ref(database, "notes/" + data.userId), {
+    title: data.title,
+    content: data.content,
+    date: data.date,
   });
 };
