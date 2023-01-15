@@ -3,7 +3,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import auth from "../../firebase";
-import { ref, set, push } from "firebase/database";
+import { ref, push, onValue } from "firebase/database";
 import { database } from "../../firebase";
 
 // fungsi asynchronous callback
@@ -69,5 +69,22 @@ export const addDataToAPi = (data) => (dispatch) => {
     title: data.title,
     content: data.content,
     date: data.date,
+  });
+};
+
+export const getDataFromApi = (userId) => (dispatch) => {
+  const urlNotes = ref(database, "notes/" + userId);
+  return new Promise((resolve, reject) => {
+    onValue(urlNotes, (snapshot) => {
+      const data = [];
+      Object.keys(snapshot.val()).map((key) => {
+        data.push({
+          id: key,
+          data: snapshot.val()[key],
+        });
+      });
+      dispatch({ type: "SET_NOTES", value: data });
+      resolve(data);
+    });
   });
 };

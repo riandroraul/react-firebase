@@ -99,21 +99,13 @@ const Login = (props) => {
     // const { email, password } = this.state;
     const res = await props.loginAPI({ email, password }).catch((err) => err);
     if (res) {
-      // this.setState({
-      //   email: "",
-      //   password: "",
-      // });
+      localStorage.setItem("userdata", JSON.stringify(res));
       setEmail("");
       setPassword("");
-      console.log("Login Berhasil", res);
-      // console.log(useNavigate()("/"));
-      // <Navigasi path="/" />;
+      // console.log("Login Berhasil", JSON.stringify(res));
       navigate("/");
-      // <Navigate to={"/"} replace={true} />;
     } else {
-      // } catch (error) {
       console.log("Login Gagal");
-      // }
     }
   };
 

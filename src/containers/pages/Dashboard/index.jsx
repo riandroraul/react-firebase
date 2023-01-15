@@ -1,6 +1,7 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
-import { addDataToAPi } from "../../../config/redux/action";
+import { addDataToAPi, getDataFromApi } from "../../../config/redux/action";
+import { database } from "../../../config/firebase";
 import "./dashboard.scss";
 
 class Dashboard extends Component {
@@ -10,14 +11,25 @@ class Dashboard extends Component {
     date: "",
   };
 
+  getDataFirebase = () => {
+    // const starCountRef = ref(database, "posts/" + postId + "/starCount");
+  };
+
+  componentDidMount() {
+    const userData = JSON.parse(localStorage.getItem("userdata"));
+    const { getNotes } = this.props;
+    getNotes(userData.uid);
+  }
+
   handleSaveNotes = () => {
     const { title, content } = this.state;
     const { saveNotes } = this.props;
+    const userData = JSON.parse(localStorage.getItem("userdata"));
     const data = {
       title,
       content,
       date: new Date().getTime(),
-      userId: this.props.userData.uid,
+      userId: userData.uid,
     };
     saveNotes(data);
   };
@@ -29,7 +41,8 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { title, content, date } = this.state;
+    const { notes } = this.props;
+    const { title, content } = this.state;
     return (
       <div className="container">
         <div className="input-form">
@@ -55,11 +68,19 @@ class Dashboard extends Component {
           </button>
         </div>
         <hr />
-        <div className="card-content">
-          <p className="title">Title</p>
-          <p className="date">13 Jan 2023</p>
-          <p className="content">Content Notes</p>
-        </div>
+        {notes.length > 0 ? (
+          <Fragment>
+            {notes.map((note) => {
+              return (
+                <div className="card-content" key={note.id}>
+                  <p className="title">{note.data.title}</p>
+                  <p className="date">{note.data.date}</p>
+                  <p className="content">{note.data.content}</p>
+                </div>
+              );
+            })}
+          </Fragment>
+        ) : null}
       </div>
     );
   }
@@ -67,10 +88,12 @@ class Dashboard extends Component {
 
 const reduxState = (state) => ({
   userData: state.user,
+  notes: state.notes,
 });
 
 const reduxDispatch = (dispatch) => ({
   saveNotes: (data) => dispatch(addDataToAPi(data)),
+  getNotes: (data) => dispatch(getDataFromApi(data)),
 });
 
 export default connect(reduxState, reduxDispatch)(Dashboard);
