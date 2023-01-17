@@ -9,6 +9,7 @@ class Dashboard extends Component {
     title: "",
     content: "",
     date: "",
+    textBtn: "Simpan",
   };
 
   getDataFirebase = () => {
@@ -40,6 +41,15 @@ class Dashboard extends Component {
     });
   };
 
+  updateNotes = (note) => {
+    // console.log(note);
+    this.setState({
+      title: note.data.title,
+      content: note.data.content,
+      textBtn: "Update",
+    });
+  };
+
   render() {
     const { notes } = this.props;
     const { title, content } = this.state;
@@ -64,7 +74,7 @@ class Dashboard extends Component {
             placeholder="content"
           ></textarea>
           <button className="save-btn" onClick={this.handleSaveNotes}>
-            simpan
+            {this.state.textBtn}
           </button>
         </div>
         <hr />
@@ -72,7 +82,11 @@ class Dashboard extends Component {
           <Fragment>
             {notes.map((note) => {
               return (
-                <div className="card-content" key={note.id}>
+                <div
+                  className="card-content"
+                  key={note.id}
+                  onClick={() => this.updateNotes(note)}
+                >
                   <p className="title">{note.data.title}</p>
                   <p className="date">{note.data.date}</p>
                   <p className="content">{note.data.content}</p>
