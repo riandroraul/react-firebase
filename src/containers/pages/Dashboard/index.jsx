@@ -1,6 +1,10 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
-import { addDataToAPi, getDataFromApi } from "../../../config/redux/action";
+import {
+  addDataToAPi,
+  getDataFromApi,
+  updateDataApi,
+} from "../../../config/redux/action";
 import { database } from "../../../config/firebase";
 import "./dashboard.scss";
 
@@ -23,16 +27,22 @@ class Dashboard extends Component {
   }
 
   handleSaveNotes = () => {
-    const { title, content } = this.state;
-    const { saveNotes } = this.props;
+    const { title, content, textBtn, noteId } = this.state;
+    const { saveNotes, updateNotes } = this.props;
     const userData = JSON.parse(localStorage.getItem("userdata"));
     const data = {
       title,
       content,
       date: new Date().getTime(),
       userId: userData.uid,
+      noteId: "",
     };
-    saveNotes(data);
+    if (textBtn === "Simpan") {
+      saveNotes(data);
+    } else {
+      data.noteId = noteId;
+      updateNotes(data);
+    }
   };
 
   onInputChange = (el, type) => {
@@ -42,17 +52,25 @@ class Dashboard extends Component {
   };
 
   updateNotes = (note) => {
-    // console.log(note);
     this.setState({
       title: note.data.title,
       content: note.data.content,
       textBtn: "Update",
+      noteId: note.id,
+    });
+  };
+
+  cancelUpdate = (note) => {
+    this.setState({
+      title: "",
+      content: "",
+      textBtn: "Simpan",
     });
   };
 
   render() {
     const { notes } = this.props;
-    const { title, content } = this.state;
+    const { title, content, textBtn } = this.state;
     return (
       <div className="container">
         <div className="input-form">
@@ -73,9 +91,18 @@ class Dashboard extends Component {
             onChange={(e) => this.onInputChange(e, "content")}
             placeholder="content"
           ></textarea>
-          <button className="save-btn" onClick={this.handleSaveNotes}>
-            {this.state.textBtn}
-          </button>
+          <div className="action-wrapper">
+            {textBtn === "Update" ? (
+              <button className="save-btn cancel" onClick={this.cancelUpdate}>
+                Cancel
+              </button>
+            ) : (
+              <div />
+            )}
+            <button className="save-btn" onClick={this.handleSaveNotes}>
+              {this.state.textBtn}
+            </button>
+          </div>
         </div>
         <hr />
         {notes.length > 0 ? (
@@ -108,6 +135,7 @@ const reduxState = (state) => ({
 const reduxDispatch = (dispatch) => ({
   saveNotes: (data) => dispatch(addDataToAPi(data)),
   getNotes: (data) => dispatch(getDataFromApi(data)),
+  updateNotes: (data) => dispatch(updateDataApi(data)),
 });
 
 export default connect(reduxState, reduxDispatch)(Dashboard);

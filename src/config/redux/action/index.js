@@ -3,7 +3,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import auth from "../../firebase";
-import { ref, push, onValue } from "firebase/database";
+import { ref, push, onValue, set } from "firebase/database";
 import { database } from "../../firebase";
 
 // fungsi asynchronous callback
@@ -86,5 +86,23 @@ export const getDataFromApi = (userId) => (dispatch) => {
       dispatch({ type: "SET_NOTES", value: data });
       resolve(data);
     });
+  });
+};
+
+export const updateDataApi = (data) => (dispatch) => {
+  return new Promise((resolve, reject) => {
+    const urlNotes = `notes/${data.userId}/${data.noteId}`;
+    set(
+      ref(database, urlNotes),
+      {
+        title: data.title,
+        content: data.content,
+        date: data.date,
+      },
+      (res) => {
+        // console.log(res);
+        res ? reject(false) : resolve(true);
+      }
+    );
   });
 };
