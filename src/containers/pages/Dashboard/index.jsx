@@ -2,10 +2,10 @@ import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import {
   addDataToAPi,
+  deleteDataApi,
   getDataFromApi,
   updateDataApi,
 } from "../../../config/redux/action";
-import { database } from "../../../config/firebase";
 import "./dashboard.scss";
 
 class Dashboard extends Component {
@@ -68,6 +68,16 @@ class Dashboard extends Component {
     });
   };
 
+  deleteNote = (el, note) => {
+    el.stopPropagation();
+    const userdata = JSON.parse(localStorage.getItem("userdata"));
+    const data = {
+      userId: userdata.uid,
+      noteId: note.id,
+    };
+    this.props.deleteNote(data);
+  };
+
   render() {
     const { notes } = this.props;
     const { title, content, textBtn } = this.state;
@@ -117,6 +127,12 @@ class Dashboard extends Component {
                   <p className="title">{note.data.title}</p>
                   <p className="date">{note.data.date}</p>
                   <p className="content">{note.data.content}</p>
+                  <div
+                    className="delete-btn"
+                    onClick={(el) => this.deleteNote(el, note)}
+                  >
+                    x
+                  </div>
                 </div>
               );
             })}
@@ -136,6 +152,7 @@ const reduxDispatch = (dispatch) => ({
   saveNotes: (data) => dispatch(addDataToAPi(data)),
   getNotes: (data) => dispatch(getDataFromApi(data)),
   updateNotes: (data) => dispatch(updateDataApi(data)),
+  deleteNote: (data) => dispatch(deleteDataApi(data)),
 });
 
 export default connect(reduxState, reduxDispatch)(Dashboard);
