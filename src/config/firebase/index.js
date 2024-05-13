@@ -4,15 +4,15 @@ import { getDatabase } from "firebase/database";
 // import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAxynsh6jZVj-34qluHTb_OjwWBpqgHWOM",
-  authDomain: "simple-notes-firebase-c9ad9.firebaseapp.com",
-  projectId: "simple-notes-firebase-c9ad9",
-  storageBucket: "simple-notes-firebase-c9ad9.appspot.com",
-  messagingSenderId: "476575360600",
-  appId: "1:476575360600:web:082dceb27f7c05275d0c2d",
-  measurementId: "G-TML76F97KJ",
+  apiKey: "your_api_key",
+  authDomain: "your_auth_domain",
+  projectId: "your_projectId",
+  storageBucket: "your_storage_bucket",
+  messagingSenderId: "youd_messagingSenderId",
+  appId: "your_appId",
+  measurementId: "your_measurementId",
   databaseURL:
-    "https://simple-notes-firebase-c9ad9-default-rtdb.firebaseio.com",
+    "your_databaseURL",
 };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
